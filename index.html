@@ -1,4 +1,93 @@
+
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vocabulary Cards</title>
+  <style>
+    body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; margin-top: 50px; }
+    .card {
+      width: 300px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      border: 2px solid #333;
+      border-radius: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: 0.3s;
+      text-align: center;
+    }
+    .card.flipped {
+      background-color: #f0f0f0;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+    }
+    .counter {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card" id="flashcard" onclick="flipCard()"></div>
+  <button onclick="nextCard()">Next</button>
+  <div class="counter" id="counter"></div>
+
+  <script>
+    const vocab = [
+      { word: "apple", translation: "Apfel" },
+      { word: "dog", translation: "Hund" },
+      { word: "book", translation: "Buch" },
+    ];
+
+    let currentIndex = 0;
+    let flipped = false;
+
+    let seenCount = JSON.parse(localStorage.getItem("seenCards")) || {};
+
+    function updateCard() {
+      flipped = false;
+      const card = document.getElementById("flashcard");
+      card.classList.remove("flipped");
+      card.textContent = vocab[currentIndex].word;
+
+      const word = vocab[currentIndex].word;
+      seenCount[word] = (seenCount[word] || 0) + 1;
+      localStorage.setItem("seenCards", JSON.stringify(seenCount));
+      document.getElementById("counter").textContent = `"${word}" seen ${seenCount[word]} time(s)`;
+    }
+
+    function flipCard() {
+      const card = document.getElementById("flashcard");
+      if (!flipped) {
+        card.textContent = vocab[currentIndex].translation;
+        card.classList.add("flipped");
+        flipped = true;
+      } else {
+        card.textContent = vocab[currentIndex].word;
+        card.classList.remove("flipped");
+        flipped = false;
+      }
+    }
+
+    function nextCard() {
+      currentIndex = (currentIndex + 1) % vocab.length;
+      updateCard();
+    }
+
+    updateCard();
+  </script>
+
+</body>
+</html>
+<!--<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -60,5 +149,5 @@
     showWord();
   </script>
 </body>
-</html>
+</html>-->
 
